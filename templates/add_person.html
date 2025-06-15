@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}ДОБАВИТЬ ЧЕЛОВЕКА - CYBERPUNK DATABASE{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="glitch-text">
+        <i class="fas fa-user-plus me-3"></i>ДОБАВИТЬ ЧЕЛОВЕКА В БАЗУ
+    </h1>
+    <p class="lead text-muted">Введите всю доступную информацию о новом субъекте</p>
+</div>
+
+<div class="card glow-animation">
+    <div class="card-header">
+        <h4><i class="fas fa-database me-2"></i>НОВАЯ ЗАПИСЬ В СИСТЕМЕ</h4>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_person_submit') }}">
+            
+            <!-- Основная информация -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-user me-2"></i>ОСНОВНЫЕ ДАННЫЕ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="full_name" class="form-label">* ПОЛНОЕ ИМЯ</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" required
+                               placeholder="Иванов Иван Иванович">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nickname" class="form-label">НИКНЕЙМ / ПСЕВДОНИМ</label>
+                        <input type="text" class="form-control" id="nickname" name="nickname"
+                               placeholder="V, Johnny, NetRunner...">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="birth_date" class="form-label">ДАТА РОЖДЕНИЯ</label>
+                        <input type="date" class="form-control" id="birth_date" name="birth_date">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="age" class="form-label">ВОЗРАСТ</label>
+                        <input type="number" class="form-control" id="age" name="age" min="1" max="120"
+                               placeholder="25">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="phone_number" class="form-label">ТЕЛЕФОН</label>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                               placeholder="+7 (999) 123-45-67">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контактная информация -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-address-book me-2"></i>КОНТАКТНЫЕ ДАННЫЕ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">EMAIL</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="user@nightcity.net">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="telegram" class="form-label">TELEGRAM</label>
+                        <input type="text" class="form-control" id="telegram" name="telegram"
+                               placeholder="@username или t.me/username">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="vk_profile" class="form-label">ВКОНТАКТЕ</label>
+                        <input type="url" class="form-control" id="vk_profile" name="vk_profile"
+                               placeholder="https://vk.com/id123456">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="instagram" class="form-label">INSTAGRAM</label>
+                        <input type="text" class="form-control" id="instagram" name="instagram"
+                               placeholder="@username или ссылка">
+                    </div>
+                    <div class="col-12">
+                        <label for="other_social" class="form-label">ДРУГИЕ СОЦСЕТИ</label>
+                        <textarea class="form-control" id="other_social" name="other_social" rows="2"
+                                  placeholder="TikTok, YouTube, Discord и другие профили"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Геолокация -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-map-marker-alt me-2"></i>ГЕОЛОКАЦИОННЫЕ ДАННЫЕ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="current_address" class="form-label">ТЕКУЩИЙ АДРЕС</label>
+                        <input type="text" class="form-control" id="current_address" name="current_address"
+                               placeholder="г. Night City, район Watson, ул. Корпорации, д. 10">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="home_address" class="form-label">ДОМАШНИЙ АДРЕС</label>
+                        <input type="text" class="form-control" id="home_address" name="home_address"
+                               placeholder="Если отличается от текущего">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="work_address" class="form-label">РАБОЧИЙ АДРЕС</label>
+                        <input type="text" class="form-control" id="work_address" name="work_address"
+                               placeholder="Место работы/учебы">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Профессиональная деятельность -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-briefcase me-2"></i>ПРОФЕССИЯ И ОБРАЗОВАНИЕ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="work_place" class="form-label">МЕСТО РАБОТЫ</label>
+                        <input type="text" class="form-control" id="work_place" name="work_place"
+                               placeholder="Arasaka Corp, Militech, Solo...">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="job_title" class="form-label">ДОЛЖНОСТЬ</label>
+                        <input type="text" class="form-control" id="job_title" name="job_title"
+                               placeholder="Netrunner, Corpo, Nomad...">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="education" class="form-label">ОБРАЗОВАНИЕ</label>
+                        <input type="text" class="form-control" id="education" name="education"
+                               placeholder="Night City University, Corp Academy...">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="school" class="form-label">ШКОЛА</label>
+                        <input type="text" class="form-control" id="school" name="school"
+                               placeholder="Школа №2077, Watson District">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Семейные связи -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-users me-2"></i>СЕМЕЙНЫЕ СВЯЗИ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="father_name" class="form-label">ОТЕЦ</label>
+                        <input type="text" class="form-control" id="father_name" name="father_name"
+                               placeholder="ФИО отца">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="mother_name" class="form-label">МАТЬ</label>
+                        <input type="text" class="form-control" id="mother_name" name="mother_name"
+                               placeholder="ФИО матери">
+                    </div>
+                    <div class="col-12">
+                        <label for="siblings" class="form-label">БРАТЬЯ/СЕСТРЫ</label>
+                        <textarea class="form-control" id="siblings" name="siblings" rows="2"
+                                  placeholder="Информация о братьях и сестрах"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительные данные -->
+            <div class="form-section mb-4">
+                <h5 class="section-title">
+                    <i class="fas fa-info-circle me-2"></i>ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="car_info" class="form-label">ТРАНСПОРТ</label>
+                        <input type="text" class="form-control" id="car_info" name="car_info"
+                               placeholder="Quadra V-Tech, Rayfield Caliburn, мотоцикл...">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="photos" class="form-label">ФОТО (ССЫЛКИ)</label>
+                        <input type="text" class="form-control" id="photos" name="photos"
+                               placeholder="Ссылки на фотографии через запятую">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="hobbies" class="form-label">ХОББИ/ИНТЕРЕСЫ</label>
+                        <textarea class="form-control" id="hobbies" name="hobbies" rows="3"
+                                  placeholder="Браindance, киберспорт, модификации..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="additional_info" class="form-label">ПРОЧИЕ ДАННЫЕ</label>
+                        <textarea class="form-control" id="additional_info" name="additional_info" rows="3"
+                                  placeholder="Любая дополнительная информация, заметки, связи"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="added_by" class="form-label">КТО ДОБАВИЛ</label>
+                        <input type="text" class="form-control" id="added_by" name="added_by"
+                               placeholder="Ваш псевдоним или имя">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки управления -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-save me-2"></i>СОХРАНИТЬ В БАЗЕ
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-times me-2"></i>ОТМЕНА
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-format phone number
+    const phoneInput = document.getElementById('phone_number');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 10) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 ($1) $2-$3-$4');
+                }
+                this.value = value;
+            }
+        });
+    }
+    
+    // Auto-format Telegram username
+    const telegramInput = document.getElementById('telegram');
+    if (telegramInput) {
+        telegramInput.addEventListener('blur', function() {
+            let value = this.value.trim();
+            if (value && !value.startsWith('@') && !value.startsWith('t.me/')) {
+                this.value = '@' + value;
+            }
+        });
+    }
+    
+    // Auto-format Instagram username
+    const instagramInput = document.getElementById('instagram');
+    if (instagramInput) {
+        instagramInput.addEventListener('blur', function() {
+            let value = this.value.trim();
+            if (value && !value.startsWith('@') && !value.startsWith('http')) {
+                this.value = '@' + value;
+            }
+        });
+    }
+    
+    // Form validation enhancement
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const fullName = document.getElementById('full_name').value.trim();
+            if (!fullName) {
+                e.preventDefault();
+                alert('Введите полное имя для создания записи!');
+                document.getElementById('full_name').focus();
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>СОХРАНЕНИЕ...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
+{% endblock %}

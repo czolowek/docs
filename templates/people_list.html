@@ -1,0 +1,440 @@
+{% extends "base.html" %}
+
+{% block title %}ВСЕ ЛЮДИ - CYBERPUNK DATABASE{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="glitch-text">
+        <i class="fas fa-users me-3"></i>БАЗА ДАННЫХ ЛЮДЕЙ
+    </h1>
+    <p class="lead text-muted">Полный список всех записей в системе</p>
+</div>
+
+<!-- Statistics Bar -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ people.total }}</div>
+            <div class="stat-label">ВСЕГО ЗАПИСЕЙ</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ people.page }}</div>
+            <div class="stat-label">ТЕКУЩАЯ СТРАНИЦА</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ people.pages }}</div>
+            <div class="stat-label">ВСЕГО СТРАНИЦ</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ people.per_page }}</div>
+            <div class="stat-label">НА СТРАНИЦЕ</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="text-center mb-4">
+    <a href="{{ url_for('add_person') }}" class="btn btn-success btn-lg me-3">
+        <i class="fas fa-user-plus me-2"></i>ДОБАВИТЬ ЧЕЛОВЕКА
+    </a>
+    <a href="{{ url_for('search') }}" class="btn btn-outline-light btn-lg">
+        <i class="fas fa-search me-2"></i>ПОИСК В БАЗЕ
+    </a>
+</div>
+
+<!-- People List -->
+{% if people.items %}
+<div class="card glow-animation">
+    <div class="card-header">
+        <h4>
+            <i class="fas fa-database me-2"></i>ЗАПИСИ В СИСТЕМЕ
+            <span class="badge bg-primary ms-2">{{ people.total }}</span>
+        </h4>
+        <small class="text-muted">
+            Показано {{ ((people.page - 1) * people.per_page) + 1 }} - {{ ((people.page - 1) * people.per_page) + people.items|length }} из {{ people.total }}
+        </small>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>ИМЯ / НИКНЕЙМ</th>
+                        <th>КОНТАКТЫ</th>
+                        <th>ЛОКАЦИЯ</th>
+                        <th>ПРОФЕССИЯ</th>
+                        <th>ДАТА ДОБАВЛЕНИЯ</th>
+                        <th>ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in people.items %}
+                    <tr class="person-row">
+                        <td>
+                            <div class="person-name">
+                                <strong class="text-primary">{{ person.full_name }}</strong>
+                                {% if person.nickname %}
+                                    <div class="nickname small">"{{ person.nickname }}"</div>
+                                {% endif %}
+                                {% if person.age %}
+                                    <div class="text-muted small">{{ person.age }} лет</div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                {% if person.phone_number %}
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone me-1"></i>{{ person.phone_number }}
+                                    </div>
+                                {% endif %}
+                                {% if person.email %}
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope me-1"></i>{{ person.email[:20] }}{% if person.email|length > 20 %}...{% endif %}
+                                    </div>
+                                {% endif %}
+                                {% if person.telegram %}
+                                    <div class="contact-item">
+                                        <i class="fab fa-telegram me-1"></i>{{ person.telegram }}
+                                    </div>
+                                {% endif %}
+                                {% if not (person.phone_number or person.email or person.telegram) %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if person.current_address %}
+                                <div class="location-info">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ person.current_address[:30] }}{% if person.current_address|length > 30 %}...{% endif %}
+                                </div>
+                            {% elif person.work_address %}
+                                <div class="location-info text-muted">
+                                    <i class="fas fa-briefcase me-1"></i>
+                                    {{ person.work_address[:30] }}{% if person.work_address|length > 30 %}...{% endif %}
+                                </div>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if person.work_place or person.job_title %}
+                                <div class="work-info">
+                                    {% if person.job_title %}
+                                        <div class="text-primary">{{ person.job_title }}</div>
+                                    {% endif %}
+                                    {% if person.work_place %}
+                                        <div class="text-muted small">{{ person.work_place[:25] }}{% if person.work_place|length > 25 %}...{% endif %}</div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="date-info">
+                                {{ person.created_at.strftime('%d.%m.%Y') if person.created_at else 'Неизвестно' }}
+                                <div class="text-muted small">
+                                    {{ person.created_at.strftime('%H:%M') if person.created_at else '' }}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('view_person', person_id=person.id) }}" 
+                                   class="btn btn-outline-light btn-sm me-1" title="Просмотр">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('edit_person', person_id=person.id) }}" 
+                                   class="btn btn-success btn-sm me-1" title="Редактировать">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('download_person_pdf', person_id=person.id) }}" 
+                                   class="btn btn-warning btn-sm" title="Скачать PDF">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if people.pages > 1 %}
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Навигация по страницам">
+        <ul class="pagination pagination-lg">
+            {% if people.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('list_people', page=1) }}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('list_people', page=people.prev_num) }}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for page_num in people.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num != people.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('list_people', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if people.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('list_people', page=people.next_num) }}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('list_people', page=people.pages) }}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+{% else %}
+<!-- Empty State -->
+<div class="no-results text-center py-5">
+    <i class="fas fa-users-slash fa-4x text-muted mb-4"></i>
+    <h4 class="text-muted mb-3">БАЗА ДАННЫХ ПУСТА</h4>
+    <p class="text-muted mb-4">
+        В системе пока нет записей о людях.<br>
+        Начните с добавления первой записи.
+    </p>
+    
+    <div class="row g-3 justify-content-center">
+        <div class="col-auto">
+            <a href="{{ url_for('add_person') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-plus me-2"></i>ДОБАВИТЬ ПЕРВОГО ЧЕЛОВЕКА
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-home me-2"></i>НА ГЛАВНУЮ
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<style>
+.person-row {
+    transition: all 0.3s ease;
+}
+
+.person-row:hover {
+    background: rgba(0, 255, 136, 0.05) !important;
+    transform: translateX(5px);
+}
+
+.person-name {
+    min-width: 150px;
+}
+
+.contact-info, .location-info, .work-info {
+    font-size: 0.9rem;
+}
+
+.contact-item {
+    margin-bottom: 2px;
+    color: var(--cyber-text-muted);
+}
+
+.contact-item i {
+    color: var(--cyber-primary);
+    width: 16px;
+}
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.date-info {
+    min-width: 80px;
+    font-size: 0.9rem;
+}
+
+.pagination .page-link {
+    color: var(--cyber-primary);
+    background: rgba(26, 26, 26, 0.8);
+    border-color: var(--cyber-gray);
+    font-family: 'Roboto Mono', monospace;
+}
+
+.pagination .page-link:hover {
+    color: var(--cyber-dark);
+    background: var(--cyber-primary);
+    border-color: var(--cyber-primary);
+}
+
+.pagination .page-item.active .page-link {
+    color: var(--cyber-dark);
+    background: var(--cyber-primary);
+    border-color: var(--cyber-primary);
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    .action-buttons .btn {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .contact-info, .location-info, .work-info {
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate table rows on load
+    const rows = document.querySelectorAll('.person-row');
+    rows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            row.style.transition = 'all 0.5s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+    
+    // Enhanced row hover effects
+    rows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            const actionButtons = this.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.style.opacity = '1';
+                actionButtons.style.transform = 'scale(1.1)';
+            }
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            const actionButtons = this.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.style.opacity = '0.8';
+                actionButtons.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // Animate statistics on scroll
+    const statCards = document.querySelectorAll('.stat-card');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumber = entry.target.querySelector('.stat-number');
+                if (statNumber) {
+                    const finalValue = parseInt(statNumber.textContent);
+                    let currentValue = 0;
+                    const increment = finalValue / 30;
+                    
+                    const counter = setInterval(() => {
+                        currentValue += increment;
+                        statNumber.textContent = Math.floor(currentValue);
+                        
+                        if (currentValue >= finalValue) {
+                            statNumber.textContent = finalValue;
+                            clearInterval(counter);
+                        }
+                    }, 30);
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+    
+    statCards.forEach(card => {
+        observer.observe(card);
+    });
+    
+    // Quick search in table
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'form-control mb-3';
+    searchInput.placeholder = 'Быстрый поиск по таблице...';
+    searchInput.style.maxWidth = '300px';
+    
+    const cardBody = document.querySelector('.card-body');
+    if (cardBody && rows.length > 0) {
+        cardBody.insertBefore(searchInput, cardBody.firstChild);
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                    row.style.opacity = '1';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Auto-refresh notification
+    let lastUpdate = Date.now();
+    setInterval(() => {
+        const now = Date.now();
+        if (now - lastUpdate > 300000) { // 5 minutes
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+            notification.innerHTML = `
+                <i class="fas fa-sync-alt me-2"></i>
+                Данные могли обновиться. 
+                <a href="javascript:location.reload()" class="alert-link">Обновить страницу</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 10000);
+        }
+    }, 30000);
+});
+</script>
+{% endblock %}

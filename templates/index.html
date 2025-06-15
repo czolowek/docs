@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}CYBERPUNK DATABASE 2077 - ГЛАВНАЯ{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-5">
+    <h1 class="display-4 glitch-text" data-typing>CYBER DATABASE</h1>
+    <h2 class="text-muted cyber-pulse">СИСТЕМА УПРАВЛЕНИЯ ДАННЫМИ ЛЮДЕЙ</h2>
+    <p class="lead mt-3">
+        <i class="fas fa-microchip me-2"></i>
+        Добро пожаловать в систему управления базой данных Night City
+    </p>
+</div>
+
+<!-- Quick Search Panel -->
+<div class="search-container glow-animation mb-5">
+    <form method="GET" action="{{ url_for('search') }}">
+        <h3 class="mb-4 text-center">
+            <i class="fas fa-search me-2"></i>БЫСТРЫЙ ПОИСК В БАЗЕ
+        </h3>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="q" class="search-input" 
+                       placeholder="Введите имя, телефон, email, адрес..." required>
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="name">ПО ИМЕНИ</option>
+                    <option value="phone">ПО ТЕЛЕФОНУ</option>
+                    <option value="email">ПО EMAIL</option>
+                    <option value="address">ПО АДРЕСУ</option>
+                    <option value="social">ПО СОЦСЕТЯМ</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                    <i class="fas fa-search me-2"></i>ПОИСК
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Statistics Dashboard -->
+<div class="stats-container mb-5">
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ stats.total_people }}</div>
+        <div class="stat-label">
+            <i class="fas fa-users me-1"></i>ВСЕГО ЛЮДЕЙ
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ stats.total_searches }}</div>
+        <div class="stat-label">
+            <i class="fas fa-search me-1"></i>ПОИСКОВЫХ ЗАПРОСОВ
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ stats.recent_additions }}</div>
+        <div class="stat-label">
+            <i class="fas fa-clock me-1"></i>ДОБАВЛЕНО ЗА 24Ч
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ stats.with_photos }}</div>
+        <div class="stat-label">
+            <i class="fas fa-camera me-1"></i>С ФОТОГРАФИЯМИ
+        </div>
+    </div>
+</div>
+
+<!-- Action Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="card h-100 glow-animation">
+            <div class="card-body text-center p-4">
+                <i class="fas fa-user-plus fa-4x mb-3" style="color: #00ff88;"></i>
+                <h4 class="card-title">ДОБАВИТЬ ЧЕЛОВЕКА</h4>
+                <p class="card-text text-muted">
+                    Внести новую запись в базу данных с полной информацией о человеке
+                </p>
+                <a href="{{ url_for('add_person') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus me-2"></i>ДОБАВИТЬ В БАЗУ
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100 glow-animation">
+            <div class="card-body text-center p-4">
+                <i class="fas fa-search-plus fa-4x mb-3" style="color: #39ff14;"></i>
+                <h4 class="card-title">РАСШИРЕННЫЙ ПОИСК</h4>
+                <p class="card-text text-muted">
+                    Найти людей по различным критериям и фильтрам
+                </p>
+                <a href="{{ url_for('search') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-search me-2"></i>НАЧАТЬ ПОИСК
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+{% if recent_people %}
+<div class="row">
+    <div class="col-12">
+        <div class="card glow-animation">
+            <div class="card-header">
+                <h4><i class="fas fa-clock me-2"></i>ПОСЛЕДНИЕ ДОБАВЛЕНИЯ</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ИМЯ</th>
+                                <th>КОНТАКТЫ</th>
+                                <th>МЕСТО</th>
+                                <th>ДАТА ДОБАВЛЕНИЯ</th>
+                                <th>ДЕЙСТВИЯ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in recent_people %}
+                            <tr>
+                                <td>
+                                    <strong class="text-primary">{{ person.full_name }}</strong>
+                                    {% if person.nickname %}
+                                        <br><small class="text-muted nickname">"{{ person.nickname }}"</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if person.phone_number %}
+                                        <div><i class="fas fa-phone me-1"></i>{{ person.phone_number }}</div>
+                                    {% endif %}
+                                    {% if person.email %}
+                                        <div><i class="fas fa-envelope me-1"></i>{{ person.email }}</div>
+                                    {% endif %}
+                                    {% if not person.phone_number and not person.email %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if person.current_address %}
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        {{ person.current_address[:30] }}{% if person.current_address|length > 30 %}...{% endif %}
+                                    {% elif person.work_place %}
+                                        <i class="fas fa-briefcase me-1"></i>
+                                        {{ person.work_place[:30] }}{% if person.work_place|length > 30 %}...{% endif %}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ person.created_at.strftime('%d.%m.%Y %H:%M') if person.created_at else '-' }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_person', person_id=person.id) }}" 
+                                       class="btn btn-outline-light btn-sm">
+                                        <i class="fas fa-eye me-1"></i>ПРОСМОТР
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('list_people') }}" class="btn btn-outline-light">
+                        <i class="fas fa-list me-2"></i>ПОКАЗАТЬ ВСЕ ЗАПИСИ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- System Info -->
+<div class="text-center mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fas fa-shield-alt me-2"></i>СИСТЕМА NIGHT CITY DATABASE
+            </h5>
+            <p class="card-text text-muted">
+                Централизованная система управления данными о людях.<br>
+                Поиск по имени, контактам, адресам, социальным сетям и другим параметрам.<br>
+                Безопасное хранение и быстрый доступ к информации.
+            </p>
+            <div class="row g-3 mt-3">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="fas fa-lock fa-2x mb-2" style="color: #00ff88;"></i>
+                        <div class="small text-muted">ЗАЩИЩЕНО</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="fas fa-bolt fa-2x mb-2" style="color: #39ff14;"></i>
+                        <div class="small text-muted">БЫСТРО</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="fas fa-database fa-2x mb-2" style="color: #00ff88;"></i>
+                        <div class="small text-muted">НАДЕЖНО</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line fa-2x mb-2" style="color: #39ff14;"></i>
+                        <div class="small text-muted">АНАЛИТИКА</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Additional page-specific JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat numbers on page load
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        let currentValue = 0;
+        const increment = finalValue / 50;
+        
+        const counter = setInterval(() => {
+            currentValue += increment;
+            stat.textContent = Math.floor(currentValue);
+            
+            if (currentValue >= finalValue) {
+                stat.textContent = finalValue;
+                clearInterval(counter);
+            }
+        }, 30);
+    });
+    
+    // Add scanning animation to search container
+    const searchContainer = document.querySelector('.search-container');
+    if (searchContainer) {
+        setInterval(() => {
+            searchContainer.style.borderColor = searchContainer.style.borderColor === 'rgb(57, 255, 20)' ? '#00ff88' : '#39ff14';
+        }, 2000);
+    }
+});
+</script>
+{% endblock %}

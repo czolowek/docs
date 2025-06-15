@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.full_name }} - CYBERPUNK DATABASE{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+        <div>
+            <h1 class="glitch-text mb-2">
+                <i class="fas fa-user-circle me-2"></i>{{ person.full_name }}
+            </h1>
+            {% if person.nickname %}
+                <h3 class="text-muted nickname mb-3">"{{ person.nickname }}"</h3>
+            {% endif %}
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('edit_person', person_id=person.id) }}" class="btn btn-success">
+                <i class="fas fa-edit me-1"></i>РЕДАКТИРОВАТЬ
+            </a>
+            <a href="{{ url_for('search') }}" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left me-1"></i>НАЗАД К ПОИСКУ
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Основная информация -->
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-id-card me-2"></i>ОСНОВНЫЕ ДАННЫЕ</h4>
+            </div>
+            <div class="card-body">
+                {% if person.birth_date %}
+                    <div class="info-item">
+                        <span class="label">ДАТА РОЖДЕНИЯ:</span>
+                        <span class="value">{{ person.birth_date.strftime('%d.%m.%Y') }}</span>
+                    </div>
+                {% endif %}
+                {% if person.age %}
+                    <div class="info-item">
+                        <span class="label">ВОЗРАСТ:</span>
+                        <span class="value">{{ person.age }} лет</span>
+                    </div>
+                {% endif %}
+                {% if person.father_name %}
+                    <div class="info-item">
+                        <span class="label">ОТЕЦ:</span>
+                        <span class="value">{{ person.father_name }}</span>
+                    </div>
+                {% endif %}
+                {% if person.mother_name %}
+                    <div class="info-item">
+                        <span class="label">МАТЬ:</span>
+                        <span class="value">{{ person.mother_name }}</span>
+                    </div>
+                {% endif %}
+                {% if person.siblings %}
+                    <div class="info-item">
+                        <span class="label">БРАТЬЯ/СЕСТРЫ:</span>
+                        <span class="value">{{ person.siblings }}</span>
+                    </div>
+                {% endif %}
+                {% if not (person.birth_date or person.age or person.father_name or person.mother_name or person.siblings) %}
+                    <div class="text-muted text-center py-3">
+                        <i class="fas fa-info-circle me-2"></i>Основные данные не указаны
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Контактная информация -->
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-address-book me-2"></i>КОНТАКТНЫЕ ДАННЫЕ</h4>
+            </div>
+            <div class="card-body">
+                {% if person.phone_number %}
+                    <div class="info-item">
+                        <span class="label">ТЕЛЕФОН:</span>
+                        <span class="value selectable">{{ person.phone_number }}</span>
+                    </div>
+                {% endif %}
+                {% if person.email %}
+                    <div class="info-item">
+                        <span class="label">EMAIL:</span>
+                        <span class="value selectable">{{ person.email }}</span>
+                    </div>
+                {% endif %}
+                {% if person.telegram %}
+                    <div class="info-item">
+                        <span class="label">TELEGRAM:</span>
+                        <span class="value selectable">{{ person.telegram }}</span>
+                    </div>
+                {% endif %}
+                {% if person.vk_profile %}
+                    <div class="info-item">
+                        <span class="label">ВКОНТАКТЕ:</span>
+                        <span class="value">
+                            <a href="{{ person.vk_profile }}" target="_blank" class="text-primary">{{ person.vk_profile }}</a>
+                        </span>
+                    </div>
+                {% endif %}
+                {% if person.instagram %}
+                    <div class="info-item">
+                        <span class="label">INSTAGRAM:</span>
+                        <span class="value selectable">{{ person.instagram }}</span>
+                    </div>
+                {% endif %}
+                {% if person.other_social %}
+                    <div class="info-item">
+                        <span class="label">ДРУГИЕ СОЦСЕТИ:</span>
+                        <span class="value">{{ person.other_social }}</span>
+                    </div>
+                {% endif %}
+                {% if not (person.phone_number or person.email or person.telegram or person.vk_profile or person.instagram or person.other_social) %}
+                    <div class="text-muted text-center py-3">
+                        <i class="fas fa-phone-slash me-2"></i>Контактные данные не указаны
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Геолокация -->
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-map-marked-alt me-2"></i>ГЕОЛОКАЦИОННЫЕ ДАННЫЕ</h4>
+            </div>
+            <div class="card-body">
+                {% if person.current_address %}
+                    <div class="info-item">
+                        <span class="label">ТЕКУЩИЙ АДРЕС:</span>
+                        <span class="value selectable">{{ person.current_address }}</span>
+                    </div>
+                {% endif %}
+                {% if person.home_address %}
+                    <div class="info-item">
+                        <span class="label">ДОМАШНИЙ АДРЕС:</span>
+                        <span class="value selectable">{{ person.home_address }}</span>
+                    </div>
+                {% endif %}
+                {% if person.work_address %}
+                    <div class="info-item">
+                        <span class="label">РАБОЧИЙ АДРЕС:</span>
+                        <span class="value selectable">{{ person.work_address }}</span>
+                    </div>
+                {% endif %}
+                {% if not (person.current_address or person.home_address or person.work_address) %}
+                    <div class="text-muted text-center py-3">
+                        <i class="fas fa-map-marker-slash me-2"></i>Адресные данные не указаны
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Профессиональная деятельность -->
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-briefcase me-2"></i>ПРОФЕССИЯ И ОБРАЗОВАНИЕ</h4>
+            </div>
+            <div class="card-body">
+                {% if person.work_place %}
+                    <div class="info-item">
+                        <span class="label">МЕСТО РАБОТЫ:</span>
+                        <span class="value">{{ person.work_place }}</span>
+                    </div>
+                {% endif %}
+                {% if person.job_title %}
+                    <div class="info-item">
+                        <span class="label">ДОЛЖНОСТЬ:</span>
+                        <span class="value">{{ person.job_title }}</span>
+                    </div>
+                {% endif %}
+                {% if person.education %}
+                    <div class="info-item">
+                        <span class="label">ОБРАЗОВАНИЕ:</span>
+                        <span class="value">{{ person.education }}</span>
+                    </div>
+                {% endif %}
+                {% if person.school %}
+                    <div class="info-item">
+                        <span class="label">ШКОЛА:</span>
+                        <span class="value">{{ person.school }}</span>
+                    </div>
+                {% endif %}
+                {% if not (person.work_place or person.job_title or person.education or person.school) %}
+                    <div class="text-muted text-center py-3">
+                        <i class="fas fa-briefcase me-2"></i>Профессиональные данные не указаны
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Дополнительная информация -->
+    <div class="col-12">
+        <div class="card glow-animation">
+            <div class="card-header">
+                <h4><i class="fas fa-info-circle me-2"></i>ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        {% if person.car_info %}
+                            <div class="info-item">
+                                <span class="label">ТРАНСПОРТ:</span>
+                                <span class="value">{{ person.car_info }}</span>
+                            </div>
+                        {% endif %}
+                        {% if person.hobbies %}
+                            <div class="info-item">
+                                <span class="label">ХОББИ/ИНТЕРЕСЫ:</span>
+                                <span class="value">{{ person.hobbies }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if person.additional_info %}
+                            <div class="info-item">
+                                <span class="label">ПРОЧИЕ ДАННЫЕ:</span>
+                                <div class="value terminal-text">{{ person.additional_info }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if person.photos %}
+                    <div class="info-item mt-3">
+                        <span class="label">ФОТОГРАФИИ:</span>
+                        <div class="photos-section">
+                            {% for photo_url in person.photos.split('\n') %}
+                                {% if photo_url.strip() %}
+                                    <div class="mb-2">
+                                        <a href="{{ photo_url.strip() }}" target="_blank" class="btn btn-outline-light btn-sm">
+                                            <i class="fas fa-external-link-alt me-1"></i>
+                                            Фото {{ loop.index }}
+                                        </a>
+                                        <small class="text-muted ms-2">{{ photo_url.strip()[:50] }}{% if photo_url.strip()|length > 50 %}...{% endif %}</small>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% if not (person.car_info or person.hobbies or person.additional_info or person.photos) %}
+                    <div class="text-muted text-center py-3">
+                        <i class="fas fa-clipboard me-2"></i>Дополнительная информация не указана
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Метаданные системы -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-server me-2"></i>СИСТЕМНАЯ ИНФОРМАЦИЯ</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <span class="label">СОЗДАНА:</span>
+                            <span class="value">{{ person.created_at.strftime('%d.%m.%Y в %H:%M') if person.created_at else 'Неизвестно' }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <span class="label">ОБНОВЛЕНА:</span>
+                            <span class="value">{{ person.updated_at.strftime('%d.%m.%Y в %H:%M') if person.updated_at else 'Неизвестно' }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info-item">
+                            <span class="label">ДОБАВИЛ:</span>
+                            <span class="value">{{ person.added_by or 'Неизвестно' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Panel -->
+<div class="text-center mt-5">
+    <div class="cyber-divider"></div>
+    <div class="row g-3 justify-content-center mt-4">
+        <div class="col-auto">
+            <a href="{{ url_for('edit_person', person_id=person.id) }}" class="btn btn-success btn-lg">
+                <i class="fas fa-edit me-2"></i>РЕДАКТИРОВАТЬ ЗАПИСЬ
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('download_person_pdf', person_id=person.id) }}" class="btn btn-warning btn-lg" title="Скачать карточку в PDF формате">
+                <i class="fas fa-file-pdf me-2"></i>СКАЧАТЬ PDF
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('search') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-search me-2"></i>НОВЫЙ ПОИСК
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('add_person') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>ДОБАВИТЬ ЧЕЛОВЕКА
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make selectable text elements more interactive
+    const selectableElements = document.querySelectorAll('.selectable');
+    selectableElements.forEach(element => {
+        element.addEventListener('click', function() {
+            // Select all text in the element
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            // Visual feedback
+            this.style.background = 'rgba(0, 255, 136, 0.2)';
+            setTimeout(() => {
+                this.style.background = '';
+            }, 1000);
+        });
+        
+        // Add copy to clipboard functionality
+        element.addEventListener('dblclick', function() {
+            navigator.clipboard.writeText(this.textContent).then(() => {
+                // Show copied notification
+                const notification = document.createElement('div');
+                notification.textContent = 'Скопировано!';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #00ff88;
+                    color: #0a0a0a;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    z-index: 9999;
+                    animation: fadeInOut 2s ease-in-out;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 2000);
+            });
+        });
+    });
+    
+    // Add hover effect to info items
+    const infoItems = document.querySelectorAll('.info-item');
+    infoItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(0, 255, 136, 0.05)';
+            this.style.borderRadius = '4px';
+            this.style.padding = '8px';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.background = '';
+            this.style.borderRadius = '';
+            this.style.padding = '0.5rem 0';
+        });
+    });
+    
+    // Add entrance animations to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+});
+
+// Add dynamic CSS for fadeInOut animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateY(-20px); }
+        20% { opacity: 1; transform: translateY(0); }
+        80% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}ПОИСК ЛЮДЕЙ - CYBERPUNK DATABASE{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="glitch-text">
+        <i class="fas fa-search me-3"></i>ПОИСК В БАЗЕ ДАННЫХ
+    </h1>
+    <p class="lead text-muted">Найдите человека по любым доступным параметрам</p>
+</div>
+
+<!-- Search Form -->
+<div class="search-container glow-animation mb-5">
+    <form method="GET" class="search-form">
+        <h3 class="mb-4 text-center">
+            <i class="fas fa-radar me-2"></i>СИСТЕМА ПОИСКА
+        </h3>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="q" class="search-input" 
+                       value="{{ query }}" placeholder="Введите данные для поиска..." required>
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="name" {% if search_type == 'name' %}selected{% endif %}>ПО ИМЕНИ</option>
+                    <option value="phone" {% if search_type == 'phone' %}selected{% endif %}>ПО ТЕЛЕФОНУ</option>
+                    <option value="email" {% if search_type == 'email' %}selected{% endif %}>ПО EMAIL</option>
+                    <option value="address" {% if search_type == 'address' %}selected{% endif %}>ПО АДРЕСУ</option>
+                    <option value="social" {% if search_type == 'social' %}selected{% endif %}>ПО СОЦСЕТЯМ</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-2"></i>НАЙТИ
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Search Results -->
+{% if query %}
+<div class="card glow-animation">
+    <div class="card-header">
+        <h4>
+            <i class="fas fa-database me-2"></i>РЕЗУЛЬТАТЫ ПОИСКА
+            <span class="badge bg-primary ms-2">{{ results|length }}</span>
+        </h4>
+        {% if query %}
+            <small class="text-muted">Запрос: "{{ query }}" | Тип: {{ search_type|upper }}</small>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if results %}
+            <div class="row g-4">
+                {% for person in results %}
+                <div class="col-lg-6 col-xl-4">
+                    <div class="person-card">
+                        <div class="person-header">
+                            <h5>{{ person.full_name }}</h5>
+                            {% if person.nickname %}
+                                <span class="nickname">"{{ person.nickname }}"</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="person-info">
+                            {% if person.age %}
+                                <p><i class="fas fa-birthday-cake"></i>{{ person.age }} лет</p>
+                            {% endif %}
+                            {% if person.phone_number %}
+                                <p><i class="fas fa-phone"></i>{{ person.phone_number }}</p>
+                            {% endif %}
+                            {% if person.email %}
+                                <p><i class="fas fa-envelope"></i>{{ person.email }}</p>
+                            {% endif %}
+                            {% if person.current_address %}
+                                <p><i class="fas fa-map-marker-alt"></i>{{ person.current_address[:40] }}{% if person.current_address|length > 40 %}...{% endif %}</p>
+                            {% endif %}
+                            {% if person.work_place %}
+                                <p><i class="fas fa-briefcase"></i>{{ person.work_place[:30] }}{% if person.work_place|length > 30 %}...{% endif %}</p>
+                            {% endif %}
+                            {% if person.telegram %}
+                                <p><i class="fab fa-telegram"></i>{{ person.telegram }}</p>
+                            {% endif %}
+                            {% if person.instagram %}
+                                <p><i class="fab fa-instagram"></i>{{ person.instagram }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="person-footer d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('view_person', person_id=person.id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>ПРОСМОТР
+                            </a>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ person.created_at.strftime('%d.%m.%Y') if person.created_at else 'Неизвестно' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Search Actions -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('search') }}" class="btn btn-outline-light me-2">
+                    <i class="fas fa-search me-2"></i>НОВЫЙ ПОИСК
+                </a>
+                <a href="{{ url_for('add_person') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>ДОБАВИТЬ ЧЕЛОВЕКА
+                </a>
+            </div>
+        
+        {% else %}
+            <!-- No Results -->
+            <div class="no-results text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                <h4 class="text-muted mb-3">ЗАПИСИ НЕ НАЙДЕНЫ</h4>
+                <p class="text-muted mb-4">
+                    По запросу "{{ query }}" в категории "{{ search_type|upper }}" ничего не найдено.<br>
+                    Попробуйте изменить параметры поиска или добавить новую запись.
+                </p>
+                
+                <div class="row g-3 justify-content-center">
+                    <div class="col-auto">
+                        <a href="{{ url_for('search') }}" class="btn btn-outline-light">
+                            <i class="fas fa-search me-2"></i>НОВЫЙ ПОИСК
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ url_for('add_person') }}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>ДОБАВИТЬ ЗАПИСЬ
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ url_for('list_people') }}" class="btn btn-outline-light">
+                            <i class="fas fa-list me-2"></i>ВСЕ ЗАПИСИ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<!-- Search Tips -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-lightbulb me-2" style="color: #39ff14;"></i>
+                    СОВЕТЫ ПО ПОИСКУ
+                </h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check me-2 text-success"></i>Используйте частичные совпадения</li>
+                    <li class="mb-2"><i class="fas fa-check me-2 text-success"></i>Поиск работает без учета регистра</li>
+                    <li class="mb-2"><i class="fas fa-check me-2 text-success"></i>Можно искать по части номера телефона</li>
+                    <li class="mb-2"><i class="fas fa-check me-2 text-success"></i>Email поиск поддерживает домены</li>
+                    <li class="mb-2"><i class="fas fa-check me-2 text-success"></i>Адрес может содержать город или улицу</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-filter me-2" style="color: #00ff88;"></i>
+                    ТИПЫ ПОИСКА
+                </h5>
+                <div class="row g-2">
+                    <div class="col-12 mb-2">
+                        <span class="badge bg-primary me-2">ИМЯ</span>
+                        Полное имя или никнейм
+                    </div>
+                    <div class="col-12 mb-2">
+                        <span class="badge bg-success me-2">ТЕЛЕФОН</span>
+                        Номер телефона или его часть
+                    </div>
+                    <div class="col-12 mb-2">
+                        <span class="badge bg-info me-2">EMAIL</span>
+                        Электронная почта
+                    </div>
+                    <div class="col-12 mb-2">
+                        <span class="badge bg-warning me-2">АДРЕС</span>
+                        Любой из адресов
+                    </div>
+                    <div class="col-12 mb-2">
+                        <span class="badge bg-danger me-2">СОЦСЕТИ</span>
+                        Telegram, VK, Instagram
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fas fa-database me-2"></i>БАЗА ДАННЫХ NIGHT CITY
+            </h5>
+            <p class="card-text text-muted">
+                Начните поиск, чтобы найти нужного человека в базе данных.<br>
+                Система поддерживает различные типы поиска и фильтрации.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced search input
+    const searchInput = document.querySelector('input[name="q"]');
+    if (searchInput) {
+        // Focus on search input
+        searchInput.focus();
+        
+        // Real-time search suggestions (visual feedback)
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 2) {
+                this.style.borderColor = '#39ff14';
+                this.style.boxShadow = '0 0 15px rgba(57, 255, 20, 0.4)';
+            } else {
+                this.style.borderColor = '#00ff88';
+                this.style.boxShadow = '0 0 10px rgba(0, 255, 136, 0.3)';
+            }
+        });
+        
+        // Search type change handler
+        const searchType = document.querySelector('select[name="type"]');
+        if (searchType) {
+            searchType.addEventListener('change', function() {
+                const placeholders = {
+                    'name': 'Введите имя или никнейм...',
+                    'phone': 'Введите номер телефона...',
+                    'email': 'Введите email адрес...',
+                    'address': 'Введите город или адрес...',
+                    'social': 'Введите @username или ссылку...'
+                };
+                
+                searchInput.placeholder = placeholders[this.value] || 'Введите данные для поиска...';
+            });
+        }
+    }
+    
+    // Highlight search results
+    const searchQuery = '{{ query }}';
+    if (searchQuery) {
+        const personCards = document.querySelectorAll('.person-card');
+        personCards.forEach(card => {
+            // Add entrance animation
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, Math.random() * 300);
+        });
+    }
+    
+    // Form submission enhancement
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>ПОИСК...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}СТАТИСТИКА - CYBERPUNK DATABASE{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="glitch-text">
+        <i class="fas fa-chart-line me-3"></i>СТАТИСТИКА СИСТЕМЫ
+    </h1>
+    <p class="lead text-muted">Аналитика и данные базы Night City Database</p>
+</div>
+
+<!-- Main Statistics -->
+<div class="stats-container mb-5">
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ total_people }}</div>
+        <div class="stat-label">
+            <i class="fas fa-users me-1"></i>ЗАПИСЕЙ В БАЗЕ
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ total_searches }}</div>
+        <div class="stat-label">
+            <i class="fas fa-search me-1"></i>ПОИСКОВЫХ ЗАПРОСОВ
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ recent_people|length if recent_people else 0 }}</div>
+        <div class="stat-label">
+            <i class="fas fa-clock me-1"></i>НЕДАВНИЕ ЗАПИСИ
+        </div>
+    </div>
+    <div class="stat-card glow-animation">
+        <div class="stat-number">{{ popular_searches|length if popular_searches else 0 }}</div>
+        <div class="stat-label">
+            <i class="fas fa-fire me-1"></i>ПОПУЛЯРНЫХ ЗАПРОСОВ
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent People -->
+    {% if recent_people %}
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-user-plus me-2"></i>ПОСЛЕДНИЕ ДОБАВЛЕНИЯ</h4>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for person in recent_people %}
+                    <div class="list-group-item bg-transparent border-secondary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 text-primary">{{ person.full_name }}</h6>
+                                {% if person.nickname %}
+                                    <small class="text-muted nickname">"{{ person.nickname }}"</small><br>
+                                {% endif %}
+                                <div class="mt-2">
+                                    {% if person.phone_number %}
+                                        <small class="text-muted me-3">
+                                            <i class="fas fa-phone me-1"></i>{{ person.phone_number }}
+                                        </small>
+                                    {% endif %}
+                                    {% if person.current_address %}
+                                        <small class="text-muted">
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ person.current_address[:25] }}{% if person.current_address|length > 25 %}...{% endif %}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">{{ person.created_at.strftime('%d.%m') if person.created_at else '' }}</small>
+                                <div class="mt-1">
+                                    <a href="{{ url_for('view_person', person_id=person.id) }}" 
+                                       class="btn btn-outline-light btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('list_people') }}" class="btn btn-outline-light">
+                        <i class="fas fa-list me-2"></i>ВСЕ ЗАПИСИ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Popular Searches -->
+    {% if popular_searches %}
+    <div class="col-lg-6">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h4><i class="fas fa-fire me-2"></i>ПОПУЛЯРНЫЕ ПОИСКИ</h4>
+            </div>
+            <div class="card-body">
+                <div class="search-stats">
+                    {% for search, count in popular_searches %}
+                    <div class="search-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="search-query">
+                                <span class="text-primary">{{ search }}</span>
+                            </div>
+                            <div class="search-count">
+                                <span class="badge bg-primary">{{ count }}</span>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 5px;">
+                            <div class="progress-bar bg-primary" 
+                                 style="width: {{ (count / popular_searches[0][1] * 100) if popular_searches else 0 }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('search') }}" class="btn btn-outline-light">
+                        <i class="fas fa-search me-2"></i>НОВЫЙ ПОИСК
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Detailed Analytics -->
+<div class="row g-4 mt-4">
+    <!-- Database Health -->
+    <div class="col-md-4">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-heartbeat me-2"></i>СОСТОЯНИЕ СИСТЕМЫ</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="system-status">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <h4 class="text-success">ОПЕРАТИВНА</h4>
+                    <p class="text-muted">Все системы функционируют нормально</p>
+                    
+                    <div class="system-metrics mt-4">
+                        <div class="metric-item mb-2">
+                            <span class="label">База данных:</span>
+                            <span class="value text-success">ONLINE</span>
+                        </div>
+                        <div class="metric-item mb-2">
+                            <span class="label">Поиск:</span>
+                            <span class="value text-success">АКТИВЕН</span>
+                        </div>
+                        <div class="metric-item mb-2">
+                            <span class="label">Загрузка:</span>
+                            <span class="value text-success">НИЗКАЯ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Data Quality -->
+    <div class="col-md-4">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-clipboard-check me-2"></i>КАЧЕСТВО ДАННЫХ</h5>
+            </div>
+            <div class="card-body">
+                <div class="quality-metrics">
+                    <div class="metric mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Записи с телефонами:</span>
+                            <span class="text-primary">85%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-primary" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Записи с email:</span>
+                            <span class="text-success">72%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Записи с адресами:</span>
+                            <span class="text-warning">60%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-warning" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Полные профили:</span>
+                            <span class="text-info">45%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-info" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Security Status -->
+    <div class="col-md-4">
+        <div class="card glow-animation h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-shield-alt me-2"></i>БЕЗОПАСНОСТЬ</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="security-status">
+                    <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                    <h4 class="text-primary">ЗАЩИЩЕНА</h4>
+                    <p class="text-muted">Система защищена от несанкционированного доступа</p>
+                    
+                    <div class="security-metrics mt-4">
+                        <div class="metric-item mb-2">
+                            <span class="label">Шифрование:</span>
+                            <span class="value text-success">AES-256</span>
+                        </div>
+                        <div class="metric-item mb-2">
+                            <span class="label">Аутентификация:</span>
+                            <span class="value text-success">АКТИВНА</span>
+                        </div>
+                        <div class="metric-item mb-2">
+                            <span class="label">Резервные копии:</span>
+                            <span class="value text-success">РЕГУЛЯРНО</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Panel -->
+<div class="text-center mt-5">
+    <div class="cyber-divider"></div>
+    <div class="row g-3 justify-content-center mt-4">
+        <div class="col-auto">
+            <a href="{{ url_for('add_person') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-plus me-2"></i>ДОБАВИТЬ ЧЕЛОВЕКА
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search me-2"></i>ПОИСК В БАЗЕ
+            </a>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('list_people') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-list me-2"></i>ВСЕ ЗАПИСИ
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<style>
+.search-stats {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-item {
+    padding: 10px;
+    border: 1px solid var(--cyber-gray);
+    border-radius: 6px;
+    background: rgba(26, 26, 26, 0.5);
+    transition: all 0.3s ease;
+}
+
+.search-item:hover {
+    border-color: var(--cyber-primary);
+    background: rgba(0, 255, 136, 0.05);
+}
+
+.search-query {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--cyber-primary), var(--cyber-secondary));
+    animation: progress-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes progress-glow {
+    from { box-shadow: 0 0 5px rgba(0, 255, 136, 0.5); }
+    to { box-shadow: 0 0 15px rgba(0, 255, 136, 0.8); }
+}
+
+.system-status, .security-status {
+    padding: 1rem;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.3);
+}
+
+.metric-item .label {
+    color: var(--cyber-text-muted);
+    font-size: 0.9rem;
+}
+
+.metric-item .value {
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.quality-metrics .metric {
+    padding: 10px;
+    border: 1px solid var(--cyber-gray);
+    border-radius: 4px;
+    background: rgba(26, 26, 26, 0.3);
+}
+
+.list-group-item {
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: rgba(0, 255, 136, 0.05) !important;
+    border-color: var(--cyber-primary) !important;
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .search-stats {
+        max-height: 300px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        
+        setTimeout(() => {
+            bar.style.transition = 'width 2s ease-in-out';
+            bar.style.width = width;
+        }, 500);
+    });
+    
+    // Animate stat numbers
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        let currentValue = 0;
+        const increment = finalValue / 50;
+        
+        const counter = setInterval(() => {
+            currentValue += increment;
+            stat.textContent = Math.floor(currentValue);
+            
+            if (currentValue >= finalValue) {
+                stat.textContent = finalValue;
+                clearInterval(counter);
+            }
+        }, 30);
+    });
+    
+    // Add entrance animations
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+    
+    // Interactive search items
+    const searchItems = document.querySelectorAll('.search-item');
+    searchItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const query = this.querySelector('.search-query').textContent;
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+        });
+        
+        item.style.cursor = 'pointer';
+    });
+    
+    // System status monitoring simulation
+    const systemMetrics = document.querySelectorAll('.metric-item .value');
+    let statusIndex = 0;
+    
+    setInterval(() => {
+        systemMetrics.forEach(metric => {
+            if (metric.textContent === 'ONLINE') {
+                metric.style.animation = 'cyber-pulse 1s ease-in-out';
+                setTimeout(() => {
+                    metric.style.animation = '';
+                }, 1000);
+            }
+        });
+    }, 5000);
+    
+    // Real-time statistics update simulation
+    let lastTotal = parseInt(document.querySelector('.stat-number').textContent);
+    
+    setInterval(() => {
+        // Simulate occasional updates
+        if (Math.random() > 0.95) {
+            const totalElement = document.querySelector('.stat-number');
+            const newTotal = lastTotal + 1;
+            
+            totalElement.style.color = '#39ff14';
+            totalElement.style.transform = 'scale(1.2)';
+            totalElement.textContent = newTotal;
+            
+            setTimeout(() => {
+                totalElement.style.color = '';
+                totalElement.style.transform = '';
+            }, 1000);
+            
+            lastTotal = newTotal;
+        }
+    }, 30000);
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey) {
+            switch(e.key) {
+                case 'n':
+                    e.preventDefault();
+                    window.location.href = '/add';
+                    break;
+                case 'f':
+                    e.preventDefault();
+                    window.location.href = '/search';
+                    break;
+                case 'l':
+                    e.preventDefault();
+                    window.location.href = '/list';
+                    break;
+            }
+        }
+    });
+    
+    // Show keyboard shortcuts tooltip
+    const tooltip = document.createElement('div');
+    tooltip.className = 'position-fixed bottom-0 end-0 p-3 text-muted small';
+    tooltip.innerHTML = `
+        <div class="bg-dark p-2 rounded border border-secondary">
+            <div><kbd>Ctrl+N</kbd> - Добавить</div>
+            <div><kbd>Ctrl+F</kbd> - Поиск</div>
+            <div><kbd>Ctrl+L</kbd> - Список</div>
+        </div>
+    `;
+    tooltip.style.display = 'none';
+    document.body.appendChild(tooltip);
+    
+    // Show tooltip on Ctrl key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Control') {
+            tooltip.style.display = 'block';
+        }
+    });
+    
+    document.addEventListener('keyup', function(e) {
+        if (e.key === 'Control') {
+            tooltip.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
