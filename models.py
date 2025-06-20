@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
-# Создаем экземпляр SQLAlchemy здесь для избежания циклического импорта
 from sqlalchemy.orm import DeclarativeBase
 
 class Base(DeclarativeBase):
