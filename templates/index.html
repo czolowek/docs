@@ -3,7 +3,6 @@
 {% block title %}CYBERPUNK DATABASE 2077 - ГЛАВНАЯ{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <div class="text-center mb-5">
     <h1 class="display-4 glitch-text" data-typing>CYBER DATABASE</h1>
     <h2 class="text-muted cyber-pulse">СИСТЕМА УПРАВЛЕНИЯ ДАННЫМИ ЛЮДЕЙ</h2>
@@ -13,7 +12,6 @@
     </p>
 </div>
 
-<!-- Quick Search Panel -->
 <div class="search-container glow-animation mb-5">
     <form method="GET" action="{{ url_for('search') }}">
         <h3 class="mb-4 text-center">
@@ -42,7 +40,6 @@
     </form>
 </div>
 
-<!-- Statistics Dashboard -->
 <div class="stats-container mb-5">
     <div class="stat-card glow-animation">
         <div class="stat-number">{{ stats.total_people }}</div>
@@ -70,7 +67,6 @@
     </div>
 </div>
 
-<!-- Action Cards -->
 <div class="row g-4 mb-5">
     <div class="col-md-6">
         <div class="card h-100 glow-animation">
@@ -103,7 +99,6 @@
     </div>
 </div>
 
-<!-- Recent Activity -->
 {% if recent_people %}
 <div class="row">
     <div class="col-12">
@@ -179,7 +174,6 @@
 </div>
 {% endif %}
 
-<!-- System Info -->
 <div class="text-center mt-5">
     <div class="card">
         <div class="card-body">
@@ -225,9 +219,7 @@
 
 {% block scripts %}
 <script>
-// Additional page-specific JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate stat numbers on page load
     const statNumbers = document.querySelectorAll('.stat-number');
     statNumbers.forEach(stat => {
         const finalValue = parseInt(stat.textContent);
@@ -245,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 30);
     });
     
-    // Add scanning animation to search container
     const searchContainer = document.querySelector('.search-container');
     if (searchContainer) {
         setInterval(() => {

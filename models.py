@@ -1,70 +1,57 @@
-from flask_sqlalchemy import SQLAlchemy
+from django.db import models
 from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase
 
-class Base(DeclarativeBase):
-    pass
+class Person(models.Model):
+    full_name = models.CharField(max_length=200)
+    nickname = models.CharField(max_length=100, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
+    
+    father_name = models.CharField(max_length=200, blank=True, null=True)
+    mother_name = models.CharField(max_length=200, blank=True, null=True)
+    siblings = models.TextField(blank=True, null=True)
+    
+    phone_number = models.CharField(max_length=50, blank=True, null=True)
+    email = models.CharField(max_length=120, blank=True, null=True)
+    telegram = models.CharField(max_length=100, blank=True, null=True)
+    vk_profile = models.CharField(max_length=200, blank=True, null=True)
+    instagram = models.CharField(max_length=200, blank=True, null=True)
+    other_social = models.TextField(blank=True, null=True)
+    
+    current_address = models.CharField(max_length=500, blank=True, null=True)
+    home_address = models.CharField(max_length=500, blank=True, null=True)
+    work_address = models.CharField(max_length=500, blank=True, null=True)
+    
+    work_place = models.CharField(max_length=300, blank=True, null=True)
+    job_title = models.CharField(max_length=200, blank=True, null=True)
+    education = models.CharField(max_length=300, blank=True, null=True)
+    school = models.CharField(max_length=300, blank=True, null=True)
+    
+    car_info = models.CharField(max_length=200, blank=True, null=True)
+    hobbies = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
+    photos = models.TextField(blank=True, null=True)
+    
+    created_at = models.DateTimeField(default=datetime.utcnow)
+    updated_at = models.DateTimeField(auto_now=True)
+    added_by = models.CharField(max_length=100, default='Анонимный')
 
-db = SQLAlchemy(model_class=Base)
+    class Meta:
+        managed = True
+        db_table = 'person'
+        app_label = 'cyber_models' 
 
-class Person(db.Model):
-    __tablename__ = 'person'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    
-    # Основная информация
-    full_name = db.Column(db.String(200), nullable=False)
-    nickname = db.Column(db.String(100))
-    birth_date = db.Column(db.Date)
-    age = db.Column(db.Integer)
-    
-    # Семья
-    father_name = db.Column(db.String(200))
-    mother_name = db.Column(db.String(200))
-    siblings = db.Column(db.Text)
-    
-    # Контакты
-    phone_number = db.Column(db.String(50))
-    email = db.Column(db.String(120))
-    telegram = db.Column(db.String(100))
-    vk_profile = db.Column(db.String(200))
-    instagram = db.Column(db.String(200))
-    other_social = db.Column(db.Text)
-    
-    # Адрес
-    current_address = db.Column(db.String(500))
-    home_address = db.Column(db.String(500))
-    work_address = db.Column(db.String(500))
-    
-    # Работа/учеба
-    work_place = db.Column(db.String(300))
-    job_title = db.Column(db.String(200))
-    education = db.Column(db.String(300))
-    school = db.Column(db.String(300))
-    
-    # Дополнительная информация
-    car_info = db.Column(db.String(200))
-    hobbies = db.Column(db.Text)
-    additional_info = db.Column(db.Text)
-    photos = db.Column(db.Text)  # URLs фотографий
-    
-    # Метаданные
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    added_by = db.Column(db.String(100))  # Кто добавил
-    
-    def __repr__(self):
-        return f'<Person {self.full_name}>'
+    def __str__(self):
+        return f'{self.full_name} ({self.id})'
 
-class SearchHistory(db.Model):
-    __tablename__ = 'search_history'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    search_query = db.Column(db.String(500), nullable=False)
-    search_type = db.Column(db.String(50))  # name, phone, email, etc
-    results_count = db.Column(db.Integer, default=0)
-    searched_at = db.Column(db.DateTime, default=datetime.utcnow)
-    ip_address = db.Column(db.String(50))
-    
-    def __repr__(self):
-        return f'<Search {self.search_query}>'
+class SearchHistory(models.Model):
+    search_query = models.CharField(max_length=500)
+    search_type = models.CharField(max_length=50)
+    searched_at = models.DateTimeField(default=datetime.utcnow)
+    results_count = models.IntegerField(default=0)
+    ip_address = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'search_history'
+        app_label = 'cyber_models' 

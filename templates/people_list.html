@@ -10,7 +10,6 @@
     <p class="lead text-muted">Полный список всех записей в системе</p>
 </div>
 
-<!-- Statistics Bar -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="stat-card">
@@ -38,7 +37,6 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
 <div class="text-center mb-4">
     <a href="{{ url_for('add_person') }}" class="btn btn-success btn-lg me-3">
         <i class="fas fa-user-plus me-2"></i>ДОБАВИТЬ ЧЕЛОВЕКА
@@ -48,7 +46,6 @@
     </a>
 </div>
 
-<!-- People List -->
 {% if people.items %}
 <div class="card glow-animation">
     <div class="card-header">
@@ -170,7 +167,6 @@
     </div>
 </div>
 
-<!-- Pagination -->
 {% if people.pages > 1 %}
 <div class="d-flex justify-content-center mt-4">
     <nav aria-label="Навигация по страницам">
@@ -224,7 +220,6 @@
 {% endif %}
 
 {% else %}
-<!-- Empty State -->
 <div class="no-results text-center py-5">
     <i class="fas fa-users-slash fa-4x text-muted mb-4"></i>
     <h4 class="text-muted mb-3">БАЗА ДАННЫХ ПУСТА</h4>
@@ -324,7 +319,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate table rows on load
     const rows = document.querySelectorAll('.person-row');
     rows.forEach((row, index) => {
         row.style.opacity = '0';
@@ -337,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, index * 50);
     });
     
-    // Enhanced row hover effects
     rows.forEach(row => {
         row.addEventListener('mouseenter', function() {
             const actionButtons = this.querySelector('.action-buttons');
@@ -356,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Animate statistics on scroll
     const statCards = document.querySelectorAll('.stat-card');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -386,7 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
     
-    // Quick search in table
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.className = 'form-control mb-3';
@@ -412,11 +403,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Auto-refresh notification
     let lastUpdate = Date.now();
     setInterval(() => {
         const now = Date.now();
-        if (now - lastUpdate > 300000) { // 5 minutes
+        if (now - lastUpdate > 300000) { 
             const notification = document.createElement('div');
             notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
             notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';

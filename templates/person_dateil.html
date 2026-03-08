@@ -25,7 +25,6 @@
 </div>
 
 <div class="row g-4">
-    <!-- Основная информация -->
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -71,7 +70,6 @@
         </div>
     </div>
     
-    <!-- Контактная информация -->
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -125,7 +123,6 @@
         </div>
     </div>
     
-    <!-- Геолокация -->
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -159,7 +156,6 @@
         </div>
     </div>
     
-    <!-- Профессиональная деятельность -->
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -199,7 +195,6 @@
         </div>
     </div>
     
-    <!-- Дополнительная информация -->
     <div class="col-12">
         <div class="card glow-animation">
             <div class="card-header">
@@ -259,7 +254,6 @@
         </div>
     </div>
     
-    <!-- Метаданные системы -->
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -291,7 +285,6 @@
     </div>
 </div>
 
-<!-- Action Panel -->
 <div class="text-center mt-5">
     <div class="cyber-divider"></div>
     <div class="row g-3 justify-content-center mt-4">
@@ -323,28 +316,23 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Make selectable text elements more interactive
     const selectableElements = document.querySelectorAll('.selectable');
     selectableElements.forEach(element => {
         element.addEventListener('click', function() {
-            // Select all text in the element
             const range = document.createRange();
             range.selectNodeContents(this);
             const selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
             
-            // Visual feedback
             this.style.background = 'rgba(0, 255, 136, 0.2)';
             setTimeout(() => {
                 this.style.background = '';
             }, 1000);
         });
         
-        // Add copy to clipboard functionality
         element.addEventListener('dblclick', function() {
             navigator.clipboard.writeText(this.textContent).then(() => {
-                // Show copied notification
                 const notification = document.createElement('div');
                 notification.textContent = 'Скопировано!';
                 notification.style.cssText = `
@@ -371,7 +359,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add hover effect to info items
     const infoItems = document.querySelectorAll('.info-item');
     infoItems.forEach(item => {
         item.addEventListener('mouseenter', function() {
@@ -387,7 +374,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add entrance animations to cards
     const cards = document.querySelectorAll('.card');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -401,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Add dynamic CSS for fadeInOut animation
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeInOut {

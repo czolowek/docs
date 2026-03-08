@@ -10,7 +10,7 @@
     <p class="lead text-muted">Аналитика и данные базы Night City Database</p>
 </div>
 
-<!-- Main Statistics -->
+
 <div class="stats-container mb-5">
     <div class="stat-card glow-animation">
         <div class="stat-number">{{ total_people }}</div>
@@ -39,7 +39,6 @@
 </div>
 
 <div class="row g-4">
-    <!-- Recent People -->
     {% if recent_people %}
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
@@ -92,7 +91,6 @@
     </div>
     {% endif %}
     
-    <!-- Popular Searches -->
     {% if popular_searches %}
     <div class="col-lg-6">
         <div class="card glow-animation h-100">
@@ -129,9 +127,7 @@
     {% endif %}
 </div>
 
-<!-- Detailed Analytics -->
 <div class="row g-4 mt-4">
-    <!-- Database Health -->
     <div class="col-md-4">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -162,7 +158,6 @@
         </div>
     </div>
     
-    <!-- Data Quality -->
     <div class="col-md-4">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -214,7 +209,6 @@
         </div>
     </div>
     
-    <!-- Security Status -->
     <div class="col-md-4">
         <div class="card glow-animation h-100">
             <div class="card-header">
@@ -246,7 +240,6 @@
     </div>
 </div>
 
-<!-- Action Panel -->
 <div class="text-center mt-5">
     <div class="cyber-divider"></div>
     <div class="row g-3 justify-content-center mt-4">
@@ -356,7 +349,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate progress bars
     const progressBars = document.querySelectorAll('.progress-bar');
     progressBars.forEach(bar => {
         const width = bar.style.width;
@@ -368,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     });
     
-    // Animate stat numbers
     const statNumbers = document.querySelectorAll('.stat-number');
     statNumbers.forEach(stat => {
         const finalValue = parseInt(stat.textContent);
@@ -386,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 30);
     });
     
-    // Add entrance animations
     const cards = document.querySelectorAll('.card');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -399,7 +389,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, index * 150);
     });
     
-    // Interactive search items
     const searchItems = document.querySelectorAll('.search-item');
     searchItems.forEach(item => {
         item.addEventListener('click', function() {
@@ -410,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
         item.style.cursor = 'pointer';
     });
     
-    // System status monitoring simulation
     const systemMetrics = document.querySelectorAll('.metric-item .value');
     let statusIndex = 0;
     
@@ -425,11 +413,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 5000);
     
-    // Real-time statistics update simulation
     let lastTotal = parseInt(document.querySelector('.stat-number').textContent);
     
     setInterval(() => {
-        // Simulate occasional updates
         if (Math.random() > 0.95) {
             const totalElement = document.querySelector('.stat-number');
             const newTotal = lastTotal + 1;
@@ -447,7 +433,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 30000);
     
-    // Add keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey) {
             switch(e.key) {
@@ -467,7 +452,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Show keyboard shortcuts tooltip
     const tooltip = document.createElement('div');
     tooltip.className = 'position-fixed bottom-0 end-0 p-3 text-muted small';
     tooltip.innerHTML = `
@@ -480,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function() {
     tooltip.style.display = 'none';
     document.body.appendChild(tooltip);
     
-    // Show tooltip on Ctrl key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Control') {
             tooltip.style.display = 'block';

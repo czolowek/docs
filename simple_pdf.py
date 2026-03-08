@@ -9,18 +9,13 @@ from datetime import datetime
 
 
 def generate_person_pdf(person):
-    """Создает PDF с информацией о человеке в киберпанк стиле"""
     
-    # Создаем буфер для PDF
     buffer = BytesIO()
     
-    # Создаем документ
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=1*inch, bottomMargin=1*inch)
     
-    # Стили
     styles = getSampleStyleSheet()
     
-    # Киберпанк стили
     title_style = ParagraphStyle(
         'CyberTitle',
         parent=styles['Heading1'],
@@ -51,26 +46,21 @@ def generate_person_pdf(person):
         spaceAfter=5
     )
     
-    # Содержимое документа
     story = []
     
-    # Заголовок
     story.append(Paragraph("CYBERPUNK DATABASE 2077", title_style))
     story.append(Paragraph("NIGHT CITY PERSONNEL RECORD", content_style))
     story.append(Spacer(1, 20))
     
-    # Заголовок с именем
     title_text = f"ЛИЧНОЕ ДЕЛО: {person.full_name.upper()}"
     if person.nickname:
         title_text += f' "{person.nickname.upper()}"'
     story.append(Paragraph(title_text, section_style))
     story.append(Spacer(1, 15))
     
-    # ID информация
     story.append(Paragraph(f"ID: NC-{person.id:06d} | STATUS: ACTIVE | CLEARANCE: LVL-{(person.id % 5) + 1}", content_style))
     story.append(Spacer(1, 15))
     
-    # Основная информация
     if any([person.full_name, person.nickname, person.age, person.birth_date]):
         story.append(Paragraph("[ БИОМЕТРИЧЕСКИЕ ДАННЫЕ ]", section_style))
         
@@ -98,7 +88,6 @@ def generate_person_pdf(person):
             story.append(bio_table)
             story.append(Spacer(1, 15))
     
-    # Контактная информация
     if any([person.phone_number, person.email, person.telegram, person.vk_profile, person.instagram]):
         story.append(Paragraph("[ КАНАЛЫ СВЯЗИ ]", section_style))
         
@@ -128,7 +117,6 @@ def generate_person_pdf(person):
             story.append(contact_table)
             story.append(Spacer(1, 15))
     
-    # Геолокация
     if any([person.current_address, person.home_address, person.work_address]):
         story.append(Paragraph("[ КООРДИНАТЫ МЕСТОПОЛОЖЕНИЯ ]", section_style))
         
@@ -154,7 +142,6 @@ def generate_person_pdf(person):
             story.append(location_table)
             story.append(Spacer(1, 15))
     
-    # Профессиональная деятельность
     if any([person.work_place, person.job_title, person.education, person.school]):
         story.append(Paragraph("[ ПРОФЕССИОНАЛЬНАЯ ДЕЯТЕЛЬНОСТЬ ]", section_style))
         
@@ -182,7 +169,6 @@ def generate_person_pdf(person):
             story.append(work_table)
             story.append(Spacer(1, 15))
     
-    # Семейные связи
     if any([person.father_name, person.mother_name, person.siblings]):
         story.append(Paragraph("[ СЕМЕЙНЫЕ СВЯЗИ ]", section_style))
         
@@ -208,7 +194,6 @@ def generate_person_pdf(person):
             story.append(family_table)
             story.append(Spacer(1, 15))
     
-    # Дополнительная информация
     if any([person.car_info, person.hobbies, person.additional_info]):
         story.append(Paragraph("[ ДОПОЛНИТЕЛЬНЫЕ ДАННЫЕ ]", section_style))
         
@@ -234,7 +219,6 @@ def generate_person_pdf(person):
             story.append(additional_table)
             story.append(Spacer(1, 15))
     
-    # Метаданные
     story.append(Paragraph("[ МЕТАДАННЫЕ СИСТЕМЫ ]", section_style))
     
     meta_data = [
@@ -255,7 +239,6 @@ def generate_person_pdf(person):
     ]))
     story.append(meta_table)
     
-    # Финальная подпись
     story.append(Spacer(1, 30))
     story.append(Paragraph("--- END OF RECORD ---", ParagraphStyle(
         'Signature', parent=styles['Normal'], fontSize=8, textColor=colors.darkgreen,
@@ -270,9 +253,7 @@ def generate_person_pdf(person):
         alignment=TA_CENTER, fontName='Helvetica'
     )))
     
-    # Генерируем PDF
     doc.build(story)
     
-    # Возвращаем буфер
     buffer.seek(0)
     return buffer

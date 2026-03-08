@@ -17,7 +17,6 @@
     <div class="card-body">
         <form method="POST" action="{{ url_for('add_person_submit') }}">
             
-            <!-- Основная информация -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-user me-2"></i>ОСНОВНЫЕ ДАННЫЕ
@@ -50,7 +49,6 @@
                 </div>
             </div>
 
-            <!-- Контактная информация -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-address-book me-2"></i>КОНТАКТНЫЕ ДАННЫЕ
@@ -84,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Геолокация -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-map-marker-alt me-2"></i>ГЕОЛОКАЦИОННЫЕ ДАННЫЕ
@@ -108,7 +105,6 @@
                 </div>
             </div>
 
-            <!-- Профессиональная деятельность -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-briefcase me-2"></i>ПРОФЕССИЯ И ОБРАЗОВАНИЕ
@@ -137,7 +133,6 @@
                 </div>
             </div>
 
-            <!-- Семейные связи -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-users me-2"></i>СЕМЕЙНЫЕ СВЯЗИ
@@ -161,7 +156,6 @@
                 </div>
             </div>
 
-            <!-- Дополнительные данные -->
             <div class="form-section mb-4">
                 <h5 class="section-title">
                     <i class="fas fa-info-circle me-2"></i>ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ
@@ -195,7 +189,6 @@
                 </div>
             </div>
 
-            <!-- Кнопки управления -->
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary btn-lg me-3">
                     <i class="fas fa-save me-2"></i>СОХРАНИТЬ В БАЗЕ
@@ -213,7 +206,6 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-format phone number
     const phoneInput = document.getElementById('phone_number');
     if (phoneInput) {
         phoneInput.addEventListener('input', function() {
@@ -227,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Auto-format Telegram username
     const telegramInput = document.getElementById('telegram');
     if (telegramInput) {
         telegramInput.addEventListener('blur', function() {
@@ -238,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Auto-format Instagram username
     const instagramInput = document.getElementById('instagram');
     if (instagramInput) {
         instagramInput.addEventListener('blur', function() {
@@ -249,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Form validation enhancement
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -261,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
-            // Show loading state
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>СОХРАНЕНИЕ...';
             submitBtn.disabled = true;

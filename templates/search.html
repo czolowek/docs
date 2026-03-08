@@ -10,7 +10,6 @@
     <p class="lead text-muted">Найдите человека по любым доступным параметрам</p>
 </div>
 
-<!-- Search Form -->
 <div class="search-container glow-animation mb-5">
     <form method="GET" class="search-form">
         <h3 class="mb-4 text-center">
@@ -39,7 +38,6 @@
     </form>
 </div>
 
-<!-- Search Results -->
 {% if query %}
 <div class="card glow-animation">
     <div class="card-header">
@@ -102,7 +100,6 @@
                 {% endfor %}
             </div>
             
-            <!-- Search Actions -->
             <div class="text-center mt-4">
                 <a href="{{ url_for('search') }}" class="btn btn-outline-light me-2">
                     <i class="fas fa-search me-2"></i>НОВЫЙ ПОИСК
@@ -113,7 +110,6 @@
             </div>
         
         {% else %}
-            <!-- No Results -->
             <div class="no-results text-center py-5">
                 <i class="fas fa-search fa-4x text-muted mb-4"></i>
                 <h4 class="text-muted mb-3">ЗАПИСИ НЕ НАЙДЕНЫ</h4>
@@ -144,7 +140,6 @@
     </div>
 </div>
 {% else %}
-<!-- Search Tips -->
 <div class="row g-4">
     <div class="col-md-6">
         <div class="card h-100">
@@ -218,13 +213,10 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Enhanced search input
     const searchInput = document.querySelector('input[name="q"]');
     if (searchInput) {
-        // Focus on search input
         searchInput.focus();
         
-        // Real-time search suggestions (visual feedback)
         searchInput.addEventListener('input', function() {
             if (this.value.length > 2) {
                 this.style.borderColor = '#39ff14';
@@ -235,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Search type change handler
         const searchType = document.querySelector('select[name="type"]');
         if (searchType) {
             searchType.addEventListener('change', function() {
@@ -252,12 +243,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Highlight search results
     const searchQuery = '{{ query }}';
     if (searchQuery) {
         const personCards = document.querySelectorAll('.person-card');
         personCards.forEach(card => {
-            // Add entrance animation
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             
@@ -269,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Form submission enhancement
     const searchForm = document.querySelector('.search-form');
     if (searchForm) {
         searchForm.addEventListener('submit', function() {
